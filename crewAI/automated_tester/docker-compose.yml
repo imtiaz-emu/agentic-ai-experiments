@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  qa-crew:
+    build: .
+    container_name: qa-crew
+    volumes:
+      - ./:/app
+      - ${REPO_PATH:-./sample_repo}:/repo
+    environment:
+      # You can override these via CLI or .env
+      - REPO_PATH=/repo
+      - TEST_DIR=/repo/tests
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    command: >
+      python crew.py
+      --repo_path /repo
+      --test_dir /repo/tests
