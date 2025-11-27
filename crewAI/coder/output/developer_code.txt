@@ -1,0 +1,13 @@
+def fibonacci_sequence(n):
+    fibonacci_numbers = [1, 1]
+    while len(fibonacci_numbers) < n:
+        next_number = fibonacci_numbers[-1] + fibonacci_numbers[-2]
+        fibonacci_numbers.append(next_number)
+    return fibonacci_numbers
+
+# Generate the first 20 numbers in the Fibonacci sequence
+fibonacci_numbers = fibonacci_sequence(20)
+print(fibonacci_numbers)
+
+Output:
+[1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765]
