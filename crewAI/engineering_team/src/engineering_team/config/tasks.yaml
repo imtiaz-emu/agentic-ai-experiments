@@ -1,0 +1,73 @@
+design_task:
+  description: >
+    Take the high level requirements described here and prepare a detailed design for the engineer;
+    everything should be written in Python, but outline the folder structure, classes and module organization.
+    If necessary, break down the design into multiple modules.
+    Ensure that the design is clear and unambiguous, so that the engineer can implement using frameworks like FastAPI or Flask.
+    The design should include considerations for scalability, maintainability, and performance. Introduce any necessary database schema or data storage considerations.
+    Here are the requirements: {requirements}
+    IMPORTANT: Only output the design in markdown format, laying out in detail the classes and functions in the module, describing the functionality.
+  expected_output: >
+    A detailed design for the engineer, identifying the folders, modules, classes, and functions needed to implement the requirements.
+    The design should be in markdown format. The new repo should be named {service_name} inside the output directory.
+  agent: engineering_lead
+  output_file: output/{service_name}_design.md
+
+code_task:
+  description: >
+    Write a service in Python that implements the design described by the engineering lead, in order to achieve the requirements.
+    Here are the requirements: {requirements}
+  expected_output: >
+    A python based service that implements the design and achieves the requirements.
+    IMPORTANT: Output ONLY the raw Python code without any markdown formatting, code block delimiters, or backticks.
+    The output should be valid Python code that can be directly saved to a file and executed. 
+    create any necessary folder structure as described in the design.
+  agent: backend_developer
+  context:
+    - design_task
+  output_file: output/{sevice_name}
+
+frontend_task:
+  description: >
+    Write a gradio UI in a module app.py that demonstrates the given backend service in {service_name}.
+    Assume there is only 1 user, and keep the UI very simple indeed - just a prototype or demo.
+    Here are the requirements: {requirements}
+  expected_output: >
+    A gradio UI in module app.py that demonstrates the given backend service.
+    The file should be ready so that it can be run as-is, in the same directory as the backend service, and it should import the backend service from {service_name}.
+    IMPORTANT: Output ONLY the raw Python code without any markdown formatting, code block delimiters, or backticks.
+    The output should be valid Python code that can be directly saved to a file and executed.
+  agent: frontend_developer
+  context:
+    - code_task
+  output_file: output/{service_name}/frontend/app.py
+
+test_task:
+  description: >
+    Write unit tests for the given backend service {service_name} and create tests in the same directory as the backend service. 
+    For each module in the backend service, create a corresponding test module prefixed with `test_`.
+    Tests are written using the pytest framework and should cover all major functionalities of the backend service.
+    Here are the requirements: {requirements}
+  expected_output: >
+    Test files prefixed with `test_` that test the given backend modules.
+    IMPORTANT: Output ONLY the raw Python code without any markdown formatting, code block delimiters, or backticks.
+    The output should be valid Python code that can be directly saved to a file and executed. 
+    All the test files should be placed in a separate tests folder in the same directory as the backend service.
+  agent: test_engineer
+  context:
+    - code_task
+  output_file: output/{service_name}/tests
+
+devops_task:
+  description: >
+    Create deployment scripts for the given backend service {service_name}.
+    The deployment should use Docker and Kubernetes, ensuring scalability, reliability, and ease of maintenance.
+  expected_output: >
+    Deployment scripts and configuration files to deploy the backend service using Docker and Kubernetes.
+    Provide documentation on how to deploy and manage the service in a production environment. Docs should be in deployment_docs.md.
+    Should have a Dockerfile, k8s deployment and service yaml files.
+  agent: devops_engineer
+  context:
+    - code_task
+  output_file: output/{service_name}/deployment_docs.md
+  
