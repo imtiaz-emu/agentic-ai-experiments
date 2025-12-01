@@ -21,11 +21,11 @@ code_task:
     A python based service that implements the design and achieves the requirements.
     IMPORTANT: Output ONLY the raw Python code without any markdown formatting, code block delimiters, or backticks.
     The output should be valid Python code that can be directly saved to a file and executed. 
-    create any necessary folder structure as described in the design.
+    create any necessary folder structure as described in the design. Put the new repo in output/{service_name}.
   agent: backend_developer
   context:
     - design_task
-  output_file: output/{sevice_name}
+  output_file: output/{service_name}
 
 frontend_task:
   description: >
@@ -53,6 +53,7 @@ test_task:
     IMPORTANT: Output ONLY the raw Python code without any markdown formatting, code block delimiters, or backticks.
     The output should be valid Python code that can be directly saved to a file and executed. 
     All the test files should be placed in a separate tests folder in the same directory as the backend service.
+    Tests should be in output/{service_name}/tests.
   agent: test_engineer
   context:
     - code_task
@@ -66,8 +67,8 @@ devops_task:
     Deployment scripts and configuration files to deploy the backend service using Docker and Kubernetes.
     Provide documentation on how to deploy and manage the service in a production environment. Docs should be in deployment_docs.md.
     Should have a Dockerfile, k8s deployment and service yaml files.
+    Put the new repo in output/{service_name}/deployment.
   agent: devops_engineer
   context:
     - code_task
   output_file: output/{service_name}/deployment_docs.md
-  

@@ -22,10 +22,10 @@ class EngineeringTeam():
         return Agent(
             config=self.agents_config['backend_developer'], # type: ignore[index]
             verbose=True,
-            allow_tool_use=True,
             allow_file_access=True,
             allow_code_execution=True,
             code_execution_mode="safe",
+            max_retry_limit=3,
         )
         
     @agent
@@ -41,10 +41,10 @@ class EngineeringTeam():
         return Agent(
             config=self.agents_config['test_engineer'], # type: ignore[index]
             verbose=True,
-            allow_tool_use=True,
             allow_file_access=True,
             allow_code_execution=True,
             code_execution_mode="safe",
+            max_retry_limit=3,
         )
         
     @agent
