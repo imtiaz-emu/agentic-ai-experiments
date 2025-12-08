@@ -1,4 +1,5 @@
 import subprocess
+import sys
 from crewai.tools import BaseTool
 from pydantic import Field
 
@@ -11,19 +12,25 @@ class CoverageRunnerTool(BaseTool):
     def _run(self, **kwargs):
         try:
             run_cmd = subprocess.run(
-                ["coverage", "run", "-m", "pytest"],
+                [sys.executable, "-m", "coverage", "run", "-m", "pytest"],
                 cwd=self.repo_path,
                 capture_output=True,
-                text=True
+                text=True,
+                timeout=300
             )
 
             report_cmd = subprocess.run(
-                ["coverage", "report"],
+                [sys.executable, "-m", "coverage", "report"],
                 cwd=self.repo_path,
                 capture_output=True,
-                text=True
+                text=True,
+                timeout=60
             )
 
             return run_cmd.stdout + run_cmd.stderr + "\n\n" + report_cmd.stdout
         except FileNotFoundError:
             return "Coverage is not installed in the environment."
+        except subprocess.TimeoutExpired:
+            return "Coverage execution timed out."
+        except Exception as e:
+            return f"Error running coverage: {str(e)}"

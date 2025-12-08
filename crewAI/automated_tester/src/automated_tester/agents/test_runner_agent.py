@@ -8,5 +8,6 @@ def create_pytest_runner_agent(repo_path: str):
         backstory="You never access internet and only execute tests.",
         tools=[PytestRunnerTool(repo_path=repo_path)],
         allow_delegation=False,
+        allow_code_execution=True,
         verbose=True,
     )

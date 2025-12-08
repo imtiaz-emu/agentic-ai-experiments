@@ -1,31 +1,31 @@
-# ============================================================
-# 1. Base image with Python
-# ============================================================
+# ---- Base Image ----
 FROM python:3.12-slim AS base
 
-# Prevent Python from writing pyc files
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl build-essential git && \
+    rm -rf /var/lib/apt/lists/*
 
+# Install uv (fast Python package installer / resolver)
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Add uv to PATH
+ENV PATH="/root/.local/bin:${PATH}"
+
+# ---- App Layer ----
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+# Copy dependency files first (for layer caching)
+COPY pyproject.toml uv.lock ./
 
-# Copy dependency files
-COPY requirements.txt .
+# Install dependencies exactly as locked
+RUN uv sync --frozen --no-dev
 
-# Install Python deps
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy project files
+# Copy the entire repo
 COPY . .
 
-# ============================================================
-# 2. Define entrypoint for running the Crew job
-# ============================================================
-ENTRYPOINT ["python", "crew.py"]
+# Expose a default working directory for generated tests
+ENV TEST_DIR="/app/tests"
+
+# Default command (user can override)
+CMD ["python", "crew.py"]

@@ -8,7 +8,7 @@ app = typer.Typer(help="Automated Tester Crew Runner")
 def run(
     repo: str = typer.Option(..., "--repo", "-r", help="Git URL or local path to repository"),
     branch: str = typer.Option("main", "--branch", "-b", help="Branch to clone if using a Git URL"),
-    test_dir: str = typer.Option("~/tests", "--test-dir", "-td", help="Directory where to save the tests")
+    test_dir: str = typer.Option(None, "--test-dir", "-td", help="Directory where to save the tests. If not specified, tests will be saved to <repo>/tests/")
 ):
     """
     Run the automated tester crew on either a local repository or a Git repository URL.
@@ -19,10 +19,11 @@ def run(
 
     typer.echo(f"Repository location prepared: {repo_path}")
 
-    crew = AutomatedTesterCrew(repo_path, test_dir).crew()
+    crew_instance = AutomatedTesterCrew(repo_path, test_dir)
+    crew = crew_instance.crew()
     result = crew.kickoff(inputs={
         "repo_path": repo_path,
-        "test_dir": test_dir
+        "test_dir": crew_instance.final_test_dir
     })
 
     typer.echo("\n=== FINAL OUTPUT ===")

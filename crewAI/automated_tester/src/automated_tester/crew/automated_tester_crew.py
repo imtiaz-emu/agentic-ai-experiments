@@ -20,20 +20,20 @@ class AutomatedTesterCrew:
         
     def crew(self):
         # default test directory = <repo_path>/tests/
-        final_test_dir = (
+        self.final_test_dir = (
             self.test_dir if self.test_dir
             else f"{self.repo_path.rstrip('/')}/tests"
         )
         
         loader = create_loader_agent(self.repo_path)
         analyzer = create_analyzer_agent()
-        tester = create_tester_agent(final_test_dir)
+        tester = create_tester_agent(self.final_test_dir)
         runner = create_pytest_runner_agent(self.repo_path)
         coverage = create_coverage_agent(self.repo_path)
 
         t1 = create_loader_task(loader, self.repo_path)
         t2 = create_analyzer_task(analyzer)
-        t3 = create_tester_task(tester)
+        t3 = create_tester_task(tester, self.final_test_dir)
         t4 = create_pytest_task(runner)
         t5 = create_coverage_task(coverage)
         
@@ -49,7 +49,8 @@ class AutomatedTesterCrew:
                 t1, t2, t3, t4, t5,
             ],
             process=Process.sequential,
-            verbose=True
+            verbose=True,
+            output_log_file=f"{self.repo_path}/automated_tester_crew.log",
         )
 
         
