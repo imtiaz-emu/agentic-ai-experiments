@@ -9,3 +9,7 @@ wheels/
 # Virtual environments
 .venv
 .env
+
+# Ignore output folder contents but keep .keep file
+crewAI/engineering_team/output/*
+!crewAI/engineering_team/output/.keep

@@ -2,6 +2,7 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
+from crewai_tools import FileWriterTool
 
 @CrewBase
 class EngineeringTeam():
@@ -26,6 +27,7 @@ class EngineeringTeam():
             allow_code_execution=True,
             code_execution_mode="safe",
             max_retry_limit=3,
+            tools=[FileWriterTool()],
         )
         
     @agent
@@ -34,6 +36,7 @@ class EngineeringTeam():
             config=self.agents_config['frontend_developer'], # type: ignore[index]
             verbose=True,
             allow_file_access=True,
+            tools=[FileWriterTool()],
         )
         
     @agent
@@ -45,6 +48,7 @@ class EngineeringTeam():
             allow_code_execution=True,
             code_execution_mode="safe",
             max_retry_limit=3,
+            tools=[FileWriterTool()],
         )
         
     @agent
@@ -54,6 +58,7 @@ class EngineeringTeam():
             verbose=True,
             allow_tool_use=True,
             allow_file_access=True,
+            tools=[FileWriterTool()],
         )
 
     @task
